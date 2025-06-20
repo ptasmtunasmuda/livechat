@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\ChatRoomController;
 use App\Http\Controllers\Api\MessageController;
 
 // Public routes
+Route::get('/test', function () {
+    return response()->json(['message' => 'API is working', 'time' => now()]);
+});
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
