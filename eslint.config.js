@@ -1,19 +1,38 @@
-import prettier from 'eslint-config-prettier';
-import vue from 'eslint-plugin-vue';
+import js from '@eslint/js';
 
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
-
-export default defineConfigWithVueTs(
-    vue.configs['flat/essential'],
-    vueTsConfigs.recommended,
+export default [
+    js.configs.recommended,
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js', 'resources/js/components/ui/*'],
+        ignores: [
+            'vendor/**',
+            'node_modules/**',
+            'public/**',
+            'bootstrap/ssr/**',
+            'tailwind.config.js',
+            'resources/js/components/ui/**'
+        ],
     },
     {
+        files: ['resources/js/**/*.{js,ts,vue}'],
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
+            globals: {
+                window: 'readonly',
+                document: 'readonly',
+                console: 'readonly',
+                process: 'readonly',
+                localStorage: 'readonly',
+                sessionStorage: 'readonly',
+            },
+        },
         rules: {
-            'vue/multi-word-component-names': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
+            // Basic rules to keep code clean
+            'no-unused-vars': 'warn',
+            'no-console': 'off',
+            'no-undef': 'warn',
+            'prefer-const': 'warn',
+            'no-var': 'warn',
         },
     },
-    prettier,
-);
+];

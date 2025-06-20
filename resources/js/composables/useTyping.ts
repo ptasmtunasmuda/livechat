@@ -2,48 +2,48 @@ import { ref, onUnmounted } from 'vue';
 import { useWebSocket } from './useWebSocket';
 
 export const useTyping = (roomId: number) => {
-  const isTyping = ref(false);
-  const typingTimeout = ref<NodeJS.Timeout | null>(null);
-  
-  const { sendTypingEvent } = useWebSocket();
+    const isTyping = ref(false);
+    const typingTimeout = ref<NodeJS.Timeout | null>(null);
 
-  const startTyping = () => {
-    if (!isTyping.value) {
-      isTyping.value = true;
-      sendTypingEvent(roomId, true);
-    }
+    const { sendTypingEvent } = useWebSocket();
 
-    // Clear existing timeout
-    if (typingTimeout.value) {
-      clearTimeout(typingTimeout.value);
-    }
+    const startTyping = () => {
+        if (!isTyping.value) {
+            isTyping.value = true;
+            sendTypingEvent(roomId, true);
+        }
 
-    // Set new timeout to stop typing after 3 seconds of inactivity
-    typingTimeout.value = setTimeout(() => {
-      stopTyping();
-    }, 3000);
-  };
+        // Clear existing timeout
+        if (typingTimeout.value) {
+            clearTimeout(typingTimeout.value);
+        }
 
-  const stopTyping = () => {
-    if (isTyping.value) {
-      isTyping.value = false;
-      sendTypingEvent(roomId, false);
-    }
+        // Set new timeout to stop typing after 3 seconds of inactivity
+        typingTimeout.value = setTimeout(() => {
+            stopTyping();
+        }, 3000);
+    };
 
-    if (typingTimeout.value) {
-      clearTimeout(typingTimeout.value);
-      typingTimeout.value = null;
-    }
-  };
+    const stopTyping = () => {
+        if (isTyping.value) {
+            isTyping.value = false;
+            sendTypingEvent(roomId, false);
+        }
 
-  // Clean up on unmount
-  onUnmounted(() => {
-    stopTyping();
-  });
+        if (typingTimeout.value) {
+            clearTimeout(typingTimeout.value);
+            typingTimeout.value = null;
+        }
+    };
 
-  return {
-    isTyping,
-    startTyping,
-    stopTyping,
-  };
+    // Clean up on unmount
+    onUnmounted(() => {
+        stopTyping();
+    });
+
+    return {
+        isTyping,
+        startTyping,
+        stopTyping,
+    };
 };
